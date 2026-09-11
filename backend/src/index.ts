@@ -27,6 +27,16 @@ if (hasFrontend) {
   app.use(express.static(frontendDist));
 }
 
+// Root
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    name: 'FundsRoom ERP/CRM API',
+    message: 'API is running. See /api/health for endpoints.',
+    health: '/api/health',
+  });
+});
+
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
