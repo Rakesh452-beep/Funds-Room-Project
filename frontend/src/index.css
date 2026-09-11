@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; -webkit-font-smoothing: antialiased; }
   body { font-family: 'Instrument Sans', system-ui, sans-serif; background: #FFFFFF; color: #000000; line-height: 1.5; }
   ::selection { background: rgba(210, 232, 35, 0.45); color: #000000; }
   ::-webkit-scrollbar { width: 6px; height: 6px; }

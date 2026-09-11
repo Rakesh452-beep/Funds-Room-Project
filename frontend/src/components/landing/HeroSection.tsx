@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowDownRight, CircleDollarSign, TrendingUp, PackageCheck, Users } from 'lucide-react';
+import { ArrowRight, CircleDollarSign, TrendingUp, PackageCheck, Users } from 'lucide-react';
 import MaskedHeading from './MaskedHeading';
 import { challanApi } from '../../services';
 import { formatCurrency, formatNumber } from '../../utils/helpers';
@@ -56,12 +56,9 @@ export const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 mt-8">
-              <button onClick={() => navigate('/login')} className="group relative inline-flex items-center">
-                <span className="absolute right-0 inset-y-0 w-[calc(100%-1.5rem)] rounded-xl bg-lime-300/60" />
-                <span className="relative z-10 px-6 py-3 rounded-xl bg-lime-500 text-lime-950 text-sm font-semibold hover:bg-lime-400 hover:-translate-y-0.5 hover:shadow-lg transition-all">Start free</span>
-                <span className="relative -left-px z-10 w-11 h-11 rounded-xl flex items-center justify-center text-stone-900">
-                  <ArrowDownRight className="w-5 h-5 transition-transform duration-300 group-hover:-rotate-45" />
-                </span>
+              <button onClick={() => navigate('/login')} className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-lime-500 text-lime-950 text-sm font-semibold hover:bg-lime-400 hover:-translate-y-0.5 hover:shadow-lg transition-all">
+                Sign in
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </div>
 

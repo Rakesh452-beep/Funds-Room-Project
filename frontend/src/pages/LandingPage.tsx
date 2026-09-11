@@ -36,7 +36,7 @@ export const LandingPage = () => {
   useEffect(() => { setMounted(true); const t = setInterval(() => setWord((w) => (w + 1) % growWords.length), 2200); return () => clearInterval(t); }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background animate-fade-in">
       {/* ─── Navbar ─── */}
       <header className="fixed top-3 left-1/2 -translate-x-1/2 w-[min(64rem,calc(100%-1.5rem))] z-50 rounded-full bg-stone-100/80 backdrop-blur-xl border border-stone-200 shadow-nav">
         <div className="h-14 flex items-center justify-between px-3 sm:px-5">

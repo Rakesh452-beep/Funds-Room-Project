@@ -156,7 +156,7 @@ export const LoginPage = () => {
             </button>
           </form>
 
-          <div className="flex items-center gap-3 mb-4"><div className="h-px flex-1 bg-stone-200" /><span className="text-[11px] font-mono text-stone-400 uppercase tracking-wider">Quick access</span><div className="h-px flex-1 bg-stone-200" /></div>
+          <div className="flex items-center gap-3 mb-4"><div className="h-px flex-1 bg-stone-200" /><span className="text-[11px] font-mono text-stone-400 uppercase tracking-wider">Test login credentials · all roles</span><div className="h-px flex-1 bg-stone-200" /></div>
 
           <div className="grid grid-cols-2 gap-2.5 mb-6">
             {quickAccounts.map((acc) => (
@@ -165,19 +165,12 @@ export const LoginPage = () => {
                   <span className="w-7 h-7 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-6" style={{ background: acc.bg, border: `1px solid ${acc.border}`, color: acc.color }}>
                     <acc.icon className="w-4 h-4" />
                   </span>
-                  <div className="min-w-0"><p className="text-sm font-semibold text-stone-800 truncate">{acc.name}</p><p className="text-[10px] text-stone-400 truncate">{acc.email}</p></div>
+                  <div className="min-w-0"><p className="text-sm font-semibold text-stone-800 truncate">{acc.name}</p><p className="text-[10px] text-stone-400 truncate">{acc.tagline}</p></div>
                 </div>
-                <p className="text-[10px] text-stone-400 transition-colors">{acc.tagline}</p>
+                <p className="text-[10px] font-mono text-stone-500 truncate">{acc.email}</p>
+                <p className="text-[10px] font-mono text-stone-400 truncate">Pass · {acc.password}</p>
               </button>
             ))}
-          </div>
-
-          <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-6 transition-colors hover:border-lime-200 hover:bg-lime-50/40">
-            <p className="text-[11px] font-mono text-stone-500 uppercase tracking-wider font-semibold mb-2">Test credentials</p>
-            <div className="flex flex-col sm:flex-row gap-2 text-xs text-stone-600">
-              <span><span className="font-mono text-stone-400">Email</span> admin@fundsroom.com</span>
-              <span><span className="font-mono text-stone-400">Pass</span> password123</span>
-            </div>
           </div>
 
           <button onClick={() => navigate('/')} className="w-full text-sm text-stone-500 hover:text-stone-900 hover:underline underline-offset-4 transition-colors py-2">← Back to home</button>
