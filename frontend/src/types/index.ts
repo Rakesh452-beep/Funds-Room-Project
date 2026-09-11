@@ -54,7 +54,6 @@ export interface Product {
   minStockAlert: number;
   location: string;
   createdAt: string;
-  imageUrl?: string;
   _count?: { stockMovements: number };
 }
 

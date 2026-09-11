@@ -22,8 +22,6 @@ services:
       JWT_EXPIRES_IN: 7d
       PORT: 5000
       NODE_ENV: production
-      # Optional Vercel Blob for product images (leave blank to disable uploads)
-      BLOB_READ_WRITE_TOKEN: ${BLOB_READ_WRITE_TOKEN:-}
     ports:
       - "5000:5000"
     depends_on:

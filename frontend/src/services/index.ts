@@ -67,14 +67,6 @@ export const productApi = {
     const res = await api.get('/products/low-stock');
     return res.data.data;
   },
-  uploadImage: async (id: string, file: File) => {
-    const form = new FormData();
-    form.append('image', file);
-    const res = await api.post(`/products/${id}/image`, form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return res.data;
-  },
 };
 
 export const challanApi = {

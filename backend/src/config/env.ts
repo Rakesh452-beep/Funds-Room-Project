@@ -10,7 +10,4 @@ export const config = {
     .split(',')
     .map((o: string) => o.trim()),
   nodeEnv: process.env.NODE_ENV || 'development',
-  blob: {
-    readWriteToken: process.env.BLOB_READ_WRITE_TOKEN || '',
-  },
 };
