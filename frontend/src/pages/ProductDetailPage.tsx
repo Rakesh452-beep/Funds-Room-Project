@@ -29,7 +29,7 @@ export const ProductDetailPage = () => {
       await productApi.uploadImage(id, file);
       await loadProduct(id);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Upload failed. S3 may not be configured on this deployment.';
+      const msg = err?.response?.data?.message || 'Upload failed. Image storage may not be configured on this deployment.';
       alert(msg);
     } finally {
       setUploading(false);

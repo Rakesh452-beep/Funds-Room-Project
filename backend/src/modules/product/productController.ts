@@ -315,18 +315,18 @@ export const uploadProductImage = async (req: AuthRequest, res: Response): Promi
       return;
     }
 
-    const { uploadToS3, isS3Configured } = await import('../../config/s3');
-    if (!isS3Configured()) {
+    const { uploadToBlob, isBlobConfigured } = await import('../../config/blob');
+    if (!isBlobConfigured()) {
       res.status(503).json({
         success: false,
-        message: 'S3 upload unavailable: AWS S3 is not configured on this deployment.',
+        message: 'Image upload unavailable: Vercel Blob is not configured on this deployment.',
       });
       return;
     }
 
     const ext = file.originalname.split('.').pop()?.toLowerCase() || 'jpg';
     const key = `products/${product.sku}-${Date.now()}.${ext}`;
-    const { url } = await uploadToS3(file.buffer, key, file.mimetype);
+    const { url } = await uploadToBlob(file.buffer, key, file.mimetype);
 
     const updated = await prisma.product.update({
       where: { id },
