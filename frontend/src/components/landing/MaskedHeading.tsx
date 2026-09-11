@@ -112,10 +112,14 @@ const MaskedHeading = ({
       const dy = Math.cos(clock * 0.17) * s.drift * 0.6;
 
       const ease = 1 - Math.exp(-dt / 0.18);
-      off.x += (off.tx + dx - off.x) * ease;
-      off.y += (off.ty + dy - off.y) * ease;
+      const nx = off.tx + dx;
+      const ny = off.ty + dy;
 
-      place();
+      if (Math.abs(nx - off.x) > 0.05 || Math.abs(ny - off.y) > 0.05) {
+        off.x += (nx - off.x) * ease;
+        off.y += (ny - off.y) * ease;
+        place();
+      }
       raf = requestAnimationFrame(frame);
     };
 
@@ -138,8 +142,22 @@ const MaskedHeading = ({
     root.addEventListener('pointerleave', onLeave);
     raf = requestAnimationFrame(frame);
 
+    const io = new IntersectionObserver(
+      entries => {
+        if (entries.some(e => e.isIntersecting)) {
+          if (!raf) raf = requestAnimationFrame(frame);
+        } else {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      },
+      { rootMargin: '120px 0px' }
+    );
+    io.observe(root);
+
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       ro.disconnect();
       root.removeEventListener('pointermove', onMove);
       root.removeEventListener('pointerleave', onLeave);

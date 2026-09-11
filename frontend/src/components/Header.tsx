@@ -8,7 +8,7 @@ export const Header = ({ title, onMenuClick }: { title: string; onMenuClick: () 
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' });
 
   return (
-    <header className="h-16 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30 bg-white/85 backdrop-blur-xl border-b border-stone-100">
+    <header className="h-16 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-stone-100">
       <div className="flex items-center gap-4">
         <button onClick={onMenuClick} className="lg:hidden text-stone-500 hover:text-stone-900 p-2 rounded-lg hover:bg-stone-100 transition-all hover:scale-105">
           <Menu className="w-5 h-5" />

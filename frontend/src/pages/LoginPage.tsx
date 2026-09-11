@@ -49,7 +49,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white lg:grid lg:grid-cols-[1fr_1.05fr]">
+    <div className="min-h-screen bg-white lg:grid lg:grid-cols-[1fr_1.05fr] animate-fade-in">
       {/* Left panel — black plate with lime/pink */}
       <div className="hidden lg:flex relative flex-col justify-between p-12 overflow-hidden bg-black text-white">
         <div className="absolute -top-24 -right-24 w-[28rem] h-[28rem] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(210,232,35,0.22) 0%, transparent 62%)' }} />

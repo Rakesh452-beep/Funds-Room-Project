@@ -38,7 +38,7 @@ export const LandingPage = () => {
   return (
     <div className="min-h-screen bg-background animate-fade-in">
       {/* ─── Navbar ─── */}
-      <header className="fixed top-3 left-1/2 -translate-x-1/2 w-[min(64rem,calc(100%-1.5rem))] z-50 rounded-full bg-stone-100/80 backdrop-blur-xl border border-stone-200 shadow-nav">
+      <header className="fixed top-3 left-1/2 -translate-x-1/2 w-[min(64rem,calc(100%-1.5rem))] z-50 rounded-full bg-stone-100/80 backdrop-blur-md border border-stone-200 shadow-nav">
         <div className="h-14 flex items-center justify-between px-3 sm:px-5">
           <div className="flex items-center gap-2.5 pl-1">
             <Logo size="sm" />
