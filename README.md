@@ -91,6 +91,10 @@
 
 ## 3. System Architecture
 
+![FundsRoom System Architecture](architecture-diagram.png)
+
+### Textual Architecture Diagram
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                     BROWSER (SPA)                        │
