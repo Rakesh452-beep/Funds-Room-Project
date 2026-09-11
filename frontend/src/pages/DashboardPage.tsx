@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { challanApi } from '../services';
+import { useAuth } from '../context/AuthContext';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import type { DashboardStats } from '../types';
 import { Users, Package, ShoppingCart, TrendingUp, ArrowRight, AlertTriangle, Sparkles } from 'lucide-react';
@@ -24,6 +25,8 @@ const KpiCard = ({ icon: Icon, label, value, color, sub }: { icon: any; label: s
 );
 
 export const DashboardPage = () => {
+  const { user } = useAuth();
+  const canCreate = user?.role === 'ADMIN' || user?.role === 'SALES';
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -47,9 +50,11 @@ export const DashboardPage = () => {
             <h1 className="text-2xl font-display font-bold tracking-tight">Welcome back 👋</h1>
             <p className="text-sm text-white/60 mt-1">Here's how your operations are doing today</p>
           </div>
-          <Link to="/challans/new" className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-lime-500 text-black text-sm font-semibold transition-all hover:bg-lime-400 hover:-translate-y-0.5 hover:shadow-lime-glow active:scale-95">
-            New Challan <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          {canCreate && (
+            <Link to="/challans/new" className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-lime-500 text-black text-sm font-semibold transition-all hover:bg-lime-400 hover:-translate-y-0.5 hover:shadow-lime-glow active:scale-95">
+              New Challan <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          )}
         </div>
       </div>
 
