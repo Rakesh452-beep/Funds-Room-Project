@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { challanApi } from '../services';
 import { formatDate, getChallanStatusColor, formatError } from '../utils/helpers';
 import type { Challan } from '../types';
-import { Plus, Search, Eye } from 'lucide-react';
+import { Plus, Search, Eye, FileDown } from 'lucide-react';
 
 export const ChallanListPage = () => {
   const [challans, setChallans] = useState<Challan[]>([]);
@@ -24,6 +24,22 @@ export const ChallanListPage = () => {
     ch.customer?.businessName?.toLowerCase().includes(search.toLowerCase()) ||
     false
   );
+
+  const handleDownloadPdf = async (id: string, number: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const blob = await challanApi.downloadInvoice(id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${number}-invoice.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err: any) { alert(formatError(err, 'Failed to download invoice')); }
+  };
 
   return (
     <div className="space-y-5">
@@ -51,7 +67,10 @@ export const ChallanListPage = () => {
                     <td className="table-cell font-mono text-xs">{formatDate(ch.createdAt)}</td>
                     <td className="table-cell font-mono text-xs">{ch.totalQuantity}</td>
                     <td className="table-cell"><span className={`badge ${getChallanStatusColor(ch.status)}`}>{ch.status}</span></td>
-                    <td className="table-cell"><Link to={`/challans/${ch.id}`} className="p-1.5 rounded-lg hover:bg-surface-100 text-surface-500 hover:text-surface-900 transition-colors inline-flex"><Eye className="w-3.5 h-3.5" /></Link></td>
+                    <td className="table-cell"><div className="flex items-center gap-1">
+                      <Link to={`/challans/${ch.id}`} className="p-1.5 rounded-lg hover:bg-surface-100 text-surface-500 hover:text-surface-900 transition-colors inline-flex" title="View"><Eye className="w-3.5 h-3.5" /></Link>
+                      <button onClick={(e) => handleDownloadPdf(ch.id, ch.challanNumber, e)} className="p-1.5 rounded-lg hover:bg-lime-50 text-surface-500 hover:text-lime-900 transition-colors inline-flex" title="Download invoice PDF"><FileDown className="w-3.5 h-3.5" /></button>
+                    </div></td>
                   </tr>
                 ))}
               </tbody>
