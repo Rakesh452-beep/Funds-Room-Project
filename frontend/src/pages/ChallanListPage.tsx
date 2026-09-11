@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { challanApi } from '../services';
+import { useAuth } from '../context/AuthContext';
 import { formatDate, getChallanStatusColor, formatError } from '../utils/helpers';
 import type { Challan } from '../types';
 import { Plus, Search, Eye, FileDown } from 'lucide-react';
 
 export const ChallanListPage = () => {
+  const { user } = useAuth();
+  const canCreate = user?.role === 'ADMIN' || user?.role === 'SALES';
   const [challans, setChallans] = useState<Challan[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -45,7 +48,7 @@ export const ChallanListPage = () => {
     <div className="space-y-5">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div><div className="eyebrow mb-1">Sales</div><h1 className="text-2xl font-display font-bold text-surface-900">Challans</h1></div>
-        <Link to="/challans/new" className="btn-primary text-sm"><Plus className="w-4 h-4" /> New Challan</Link>
+        {canCreate && <Link to="/challans/new" className="btn-primary text-sm"><Plus className="w-4 h-4" /> New Challan</Link>}
       </div>
       {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
       <div className="relative max-w-sm">

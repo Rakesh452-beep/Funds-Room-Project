@@ -635,11 +635,11 @@ export const downloadChallanInvoice = async (req: AuthRequest, res: Response): P
       doc.text(`₹ ${lineTotal.toFixed(2)}`, colXs.total, y);
       y += 18;
       doc.moveTo(50, y).lineTo(545, y).strokeColor('#EDEDED').lineWidth(0.5).stroke();
-      y += 4;
+      y += 6;
     });
 
-    // Totals
-    const totalsY = Math.max(y, tableTop + 60) + 10;
+    const pageBottom = doc.page.height - 50;
+    const totalsY = y > pageBottom - 90 ? pageBottom - 70 : doc.y + 10;
     doc.rect(50, totalsY - 12, 495, 1).fill('#EDEDED');
     doc.font('Helvetica-Bold').fontSize(10).fill('#111111');
     doc.text('Total Quantity', 380, totalsY + 4);
@@ -647,10 +647,13 @@ export const downloadChallanInvoice = async (req: AuthRequest, res: Response): P
     doc.text('Total Amount', 380, totalsY + 22);
     doc.text(`₹ ${totalValue.toFixed(2)}`, 500, totalsY + 22);
 
-    // Footer
-    doc.fill('#737373').fontSize(8).font('Helvetica')
-      .text('THANK YOU FOR YOUR BUSINESS', 50, 780, { align: 'center' })
-      .text('FundsRoom ERP + CRM · Generated automatically · This is a computer-generated invoice.', 50, 794, { align: 'center' });
+    // Footer — only if it fits on the same page, otherwise omit
+    const footerY = totalsY + 50;
+    if (footerY < pageBottom) {
+      doc.fill('#737373').fontSize(8).font('Helvetica')
+        .text('THANK YOU FOR YOUR BUSINESS', 50, footerY, { align: 'center', width: 495 })
+        .text('FundsRoom ERP + CRM · Generated automatically · This is a computer-generated invoice.', 50, footerY + 14, { align: 'center', width: 495 });
+    }
 
     doc.end();
   } catch (error) {
