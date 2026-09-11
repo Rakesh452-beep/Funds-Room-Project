@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>FundsRoom - Complete Project Documentation</title>
+<style>body{font-family:Calibri,'Segoe UI',sans-serif;color:#292524;margin:0;padding:40px 60px;line-height:1.7;font-size:11pt}
+h1{color:#000;font-size:22pt;border-bottom:3px solid #84CC16;padding-bottom:8px;margin-top:40px}
+h2{color:#000;font-size:16pt;margin-top:32px;border-bottom:1px solid #E7E5E4;padding-bottom:4px}
+h3{color:#1a1a1a;font-size:13pt;margin-top:24px}
+a{color:#2563EB;text-decoration:none}
+table{border-collapse:collapse;width:100%;margin:14px 0}
+th{background:#1a1a1a;color:#fff;padding:10px 14px;text-align:left;font-size:10pt}
+td{padding:8px 14px;border:1px solid #ddd;font-size:10pt}
+tr:nth-child(even) td{background:#F5F5F4}
+code{background:#F0F0F0;padding:2px 6px;font-family:Consolas,monospace;font-size:9.5pt;border-radius:3px}
+pre{background:#F5F5F4;padding:14px;font-family:Consolas,monospace;font-size:9pt;border-left:4px solid #84CC16;white-space:pre-wrap;margin:10px 0}
+blockquote{border-left:4px solid #84CC16;padding:8px 16px;margin:12px 0;background:#F9FAFB;color:#555;font-style:italic}
+ul,ol{margin:8px 0;padding-left:28px}
+li{margin:4px 0}
+hr{border:none;border-top:2px solid #E7E5E4;margin:30px 0}
+p{margin:8px 0}</style></head><body>
+<h1>FundsRoom — Mini ERP + CRM</h1>
+<blockquote>
+<p>A full-stack operations portal for wholesale businesses featuring <strong>Customer CRM</strong>, <strong>Product &amp; Stock Management</strong>, <strong>Sales Challans with PDF Invoicing</strong>, <strong>Role-Based Access Control</strong>, and a <strong>Live Analytics Dashboard</strong>.</p>
+</blockquote>
+<hr>
+<h2>Quick Links</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Frontend (Live)</strong></td>
+<td><a href="https://funds-room-project-gamma.vercel.app">https://funds-room-project-gamma.vercel.app</a></td>
+</tr>
+<tr>
+<td><strong>Backend API (Live)</strong></td>
+<td><a href="https://funds-room-project.onrender.com">https://funds-room-project.onrender.com</a></td>
+</tr>
+<tr>
+<td><strong>Health Check</strong></td>
+<td><a href="https://funds-room-project.onrender.com/api/health">https://funds-room-project.onrender.com/api/health</a></td>
+</tr>
+<tr>
+<td><strong>GitHub Repository</strong></td>
+<td><a href="https://github.com/Rakesh452-beep/Funds-Room-Project">https://github.com/Rakesh452-beep/Funds-Room-Project</a></td>
+</tr>
+<tr>
+<td><strong>Postman Collection</strong></td>
+<td><code>postman/FundsRoom.postman_collection.json</code> (in repo)</td>
+</tr>
+<tr>
+<td><strong>README / Docs</strong></td>
+<td>This file (<code>README.md</code>)</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>PostgreSQL via Neon (serverless)</td>
+</tr>
+</tbody></table>
+<h3>Test Credentials (All Roles)</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Email</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Admin</td>
+<td><code>admin@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+<tr>
+<td>Sales</td>
+<td><code>sales@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+<tr>
+<td>Warehouse</td>
+<td><code>warehouse@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+<tr>
+<td>Accounts</td>
+<td><code>accounts@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>The login page also includes a one-click <strong>&quot;Test login credentials · all roles&quot;</strong> panel for instant access.</p>
+</blockquote>
+<hr>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#1-project-overview">Project Overview</a></li>
+<li><a href="#2-tech-stack">Tech Stack</a></li>
+<li><a href="#3-system-architecture">System Architecture</a></li>
+<li><a href="#4-database-schema">Database Schema</a></li>
+<li><a href="#5-features">Features</a></li>
+<li><a href="#6-frontend--pages--routing">Frontend — Pages &amp; Routing</a></li>
+<li><a href="#7-backend--modules--structure">Backend — Modules &amp; Structure</a></li>
+<li><a href="#8-api-reference">API Reference</a></li>
+<li><a href="#9-authentication--role-based-access">Authentication &amp; Role-Based Access</a></li>
+<li><a href="#10-challan-lifecycle--stock-workflow">Challan Lifecycle &amp; Stock Workflow</a></li>
+<li><a href="#11-pdf-invoice-generation">PDF Invoice Generation</a></li>
+<li><a href="#12-local-development-setup">Local Development Setup</a></li>
+<li><a href="#13-docker-setup">Docker Setup</a></li>
+<li><a href="#14-deployment">Deployment</a></li>
+<li><a href="#15-cicd-pipeline">CI/CD Pipeline</a></li>
+<li><a href="#16-environment-variables">Environment Variables</a></li>
+<li><a href="#17-project-file-structure">Project File Structure</a></li>
+<li><a href="#18-known-limitations--incomplete-parts">Known Limitations &amp; Incomplete Parts</a></li>
+<li><a href="#19-quick-links">Quick Links</a></li>
+</ol>
+<hr>
+<h2>1. Project Overview</h2>
+<p><strong>FundsRoom</strong> is a mini ERP + CRM designed for wholesale/retail businesses. It centralizes customer management, product inventory, sales dispatch (challans), and operational analytics into a single portal with four distinct user roles.</p>
+<h3>What it solves</h3>
+<ul>
+<li><strong>Customer CRM</strong> — track leads, active customers, and inactive accounts with follow-up notes.</li>
+<li><strong>Product &amp; Stock Management</strong> — catalog products with SKU, pricing, location, and live stock levels. Automatic low-stock alerts. Full stock movement ledger.</li>
+<li><strong>Sales Challans</strong> — create dispatch notes (challans) with line items. Workflow: Draft → Confirmed → Cancelled. Stock is atomically decremented on confirm, restored on cancel.</li>
+<li><strong>PDF Invoicing</strong> — download a branded, print-ready PDF invoice for any challan.</li>
+<li><strong>Dashboard</strong> — real-time KPIs: total customers, products, revenue, draft/confirmed challans, low-stock alerts, and recent challan activity.</li>
+<li><strong>Role-Based Access</strong> — four roles (Admin, Sales, Warehouse, Accounts) with fine-grained route permissions.</li>
+</ul>
+<hr>
+<h2>2. Tech Stack</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Frontend</strong></td>
+<td>React 18, TypeScript, Vite</td>
+<td>SPA with type safety and fast HMR</td>
+</tr>
+<tr>
+<td><strong>Styling</strong></td>
+<td>Tailwind CSS</td>
+<td>Utility-first responsive UI</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>React Router v6</td>
+<td>Client-side SPA routing with route guards</td>
+</tr>
+<tr>
+<td><strong>HTTP Client</strong></td>
+<td>Axios</td>
+<td>API calls with JWT interceptor and 401 auto-logout</td>
+</tr>
+<tr>
+<td><strong>Icons</strong></td>
+<td>Lucide React</td>
+<td>Consistent vector icon library</td>
+</tr>
+<tr>
+<td><strong>Animations</strong></td>
+<td>GSAP</td>
+<td>Smooth landing page and scroll animations</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>Node.js, Express, TypeScript</td>
+<td>RESTful API with modular architecture</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td>Prisma</td>
+<td>Type-safe database access, migrations, seeding</td>
+</tr>
+<tr>
+<td><strong>Validation</strong></td>
+<td>express-validator</td>
+<td>Request body validation middleware</td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td>JWT (jsonwebtoken) + bcrypt</td>
+<td>Stateless token-based authentication</td>
+</tr>
+<tr>
+<td><strong>PDF</strong></td>
+<td>PDFKit</td>
+<td>Server-side PDF invoice generation</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>PostgreSQL (Neon)</td>
+<td>Serverless relational database</td>
+</tr>
+<tr>
+<td><strong>Hosting</strong></td>
+<td>Vercel (frontend), Render (backend)</td>
+<td>Free-tier cloud deployment</td>
+</tr>
+<tr>
+<td><strong>Tooling</strong></td>
+<td>Docker, GitHub Actions</td>
+<td>Containerization and CI/CD</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. System Architecture</h2>
+<pre><code>┌──────────────────────────────────────────────────────────┐
+│                     BROWSER (SPA)                        │
+│              React + TypeScript + Tailwind                │
+│          Hosted on Vercel (free tier)                     │
+│                                                          │
+│  Pages:  Landing → Login → Dashboard                     │
+│          Customers → Products → Challans → Users          │
+│                                                          │
+│  API calls use relative /api base URL                    │
+└──────────────────────┬───────────────────────────────────┘
+                       │  HTTPS
+                       │  /api/*  (Vercel rewrite via vercel.json)
+                       ▼
+┌──────────────────────────────────────────────────────────┐
+│                  EXPRESS API SERVER                       │
+│             Hosted on Render (free tier)                  │
+│                                                          │
+│  ┌─────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐  │
+│  │  Auth   │  │ Customer │  │ Product  │  │ Challan │  │
+│  │ Module  │  │  Module  │  │  Module  │  │ Module  │  │
+│  └─────────┘  └──────────┘  └──────────┘  └─────────┘  │
+│                                                          │
+│  Middleware:  JWT Auth  →  Role Check  →  Validation     │
+│  Cross-cut:  Error Handler, CORS, Helmet                 │
+│                                                          │
+│  ORM: Prisma Client (auto-generated from schema)        │
+└──────────────────────┬───────────────────────────────────┘
+                       │  Prisma Client (TCP)
+                       ▼
+┌──────────────────────────────────────────────────────────┐
+│                  PostgreSQL DATABASE                      │
+│              Hosted on Neon (serverless)                  │
+│                                                          │
+│  Tables: users, customers, follow_ups, products,         │
+│          stock_movements, challans, challan_items         │
+└──────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>Request Flow</h3>
+<ol>
+<li>User interacts with the React SPA in the browser.</li>
+<li>Axios sends requests to <code>/api/*</code> with a JWT <code>Authorization: Bearer</code> header.</li>
+<li>Vercel rewrites <code>/api/*</code> → <code>https://funds-room-project.onrender.com/api/*</code>.</li>
+<li>Express receives the request:<ul>
+<li><strong>Auth middleware</strong> verifies the JWT and attaches <code>req.user</code>.</li>
+<li><strong>Role middleware</strong> checks <code>authorize(roles...)</code> against <code>req.user.role</code>.</li>
+<li><strong>Validation middleware</strong> runs <code>express-validator</code> checks.</li>
+<li><strong>Controller</strong> executes business logic and queries the database via Prisma.</li>
+</ul>
+</li>
+<li>Response returns as JSON: <code>{ success, data?, message?, pagination? }</code>.</li>
+<li>On 401 errors, the frontend clears tokens and redirects to <code>/login</code>.</li>
+</ol>
+<hr>
+<h2>4. Database Schema</h2>
+<p>Prisma schema at <code>backend/prisma/schema.prisma</code>:</p>
+<pre><code>┌─────────────┐       ┌──────────────────┐       ┌──────────────┐
+│    User      │       │    Customer       │       │    Product   │
+├─────────────┤       ├──────────────────┤       ├──────────────┤
+│ id (PK,uuid)│◄──┐   │ id (PK,uuid)     │◄──┐   │ id (PK,uuid) │◄──┐
+│ name         │   │   │ name             │   │   │ name         │   │
+│ email (uni)  │   │   │ mobile           │   │   │ sku (uni)    │   │
+│ password     │   │   │ email            │   │   │ category     │   │
+│ role (enum)  │   │   │ businessName     │   │   │ unitPrice    │   │
+│ createdAt    │   │   │ gstNumber?       │   │   │ currentStock │   │
+│ updatedAt    │   │   │ customerType     │   │   │ minStockAlert│   │
+└─────────────┘   │   │ address          │   │   │ location     │   │
+                  │   │ status (enum)    │   │   │ imageUrl?    │   │
+                  │   │ followUpDate?    │   │   │ createdBy    │───┘
+                  │   │ createdBy ───────│───┘   └──────────────┘
+                  │   └──────────────────┘              │
+                  │                                     │
+          ┌───────┤─── FollowUp                         │
+          │       │   id, note, createdAt,              │
+          │       │   customerId → Customer             │
+          │       │   createdBy → User                  │
+          │       ├──────────────────┐                  │
+          │       │   StockMovement  │                  │
+          │       │   id, quantity   │                  │
+          │       │   movementType   │                  │
+          │       │   reason         │                  │
+          │       │   productId ─────│──────────────────┘
+          │       │   createdBy ─────│─── User
+          │       └──────────────────┘
+          │       ┌──────────────────┐       ┌──────────────┐
+          │       │    Challan       │       │ ChallanItem  │
+          │       ├──────────────────┤       ├──────────────┤
+          └──────►│ id (PK,uuid)     │◄──┐   │ id           │
+                  │ challanNumber    │   │   │ productName  │
+                  │ totalQuantity    │   │   │ productSku   │
+                  │ status (enum)    │   │   │ unitPrice    │
+                  │ customerId ──────│───┘   │ quantity     │
+                  │ createdBy ───────│─── User│ productId ──│─── Product
+                  │ createdAt        │   │   │ challanId ───│─── Challan
+                  └──────────────────┘   │   └──────────────┘
+                                         │
+</code></pre>
+<h3>Enums</h3>
+<table>
+<thead>
+<tr>
+<th>Enum</th>
+<th>Values</th>
+<th>Used in</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>UserRole</code></td>
+<td><code>ADMIN</code>, <code>SALES</code>, <code>WAREHOUSE</code>, <code>ACCOUNTS</code></td>
+<td>User</td>
+</tr>
+<tr>
+<td><code>CustomerType</code></td>
+<td><code>RETAIL</code>, <code>WHOLESALE</code>, <code>DISTRIBUTOR</code></td>
+<td>Customer</td>
+</tr>
+<tr>
+<td><code>CustomerStatus</code></td>
+<td><code>LEAD</code>, <code>ACTIVE</code>, <code>INACTIVE</code></td>
+<td>Customer</td>
+</tr>
+<tr>
+<td><code>StockMovementType</code></td>
+<td><code>IN</code>, <code>OUT</code></td>
+<td>StockMovement</td>
+</tr>
+<tr>
+<td><code>ChallanStatus</code></td>
+<td><code>DRAFT</code>, <code>CONFIRMED</code>, <code>CANCELLED</code></td>
+<td>Challan</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>5. Features</h2>
+<h3>Authentication &amp; Authorization</h3>
+<ul>
+<li>JWT-based stateless authentication (token stored in <code>localStorage</code>)</li>
+<li>Four roles: <strong>ADMIN</strong>, <strong>SALES</strong>, <strong>WAREHOUSE</strong>, <strong>ACCOUNTS</strong></li>
+<li>Automatic 401 redirect to login on token expiry</li>
+<li>Route-level and button-level role gating</li>
+</ul>
+<h3>Customer CRM</h3>
+<ul>
+<li>Full CRUD for customers (create, read, update, delete)</li>
+<li>Customer types: Retail, Wholesale, Distributor</li>
+<li>Customer status pipeline: Lead → Active → Inactive</li>
+<li>Follow-up notes with author tracking and timestamps</li>
+<li>Follow-up date scheduling</li>
+</ul>
+<h3>Product &amp; Stock Management</h3>
+<ul>
+<li>Full CRUD for products with SKU, category, pricing, location</li>
+<li>Live stock level tracking (<code>currentStock</code>)</li>
+<li>Low-stock alerts (configurable per-product <code>minStockAlert</code>)</li>
+<li>Stock movement ledger (every IN/OUT recorded with reason and user)</li>
+<li>Manual stock adjustment API</li>
+</ul>
+<h3>Sales Challans</h3>
+<ul>
+<li>Create challans with line items (product selection + quantity)</li>
+<li>Auto-generated challan number (<code>CH-YYYYMMDD-NNN</code>)</li>
+<li>Lifecycle: Draft → Confirmed → Cancelled</li>
+<li><strong>Confirm</strong> atomically checks stock, decrements, and writes OUT movements</li>
+<li><strong>Cancel</strong> restores stock and writes IN movements</li>
+<li>PDF invoice export (branded, single-page A4)</li>
+</ul>
+<h3>Dashboard</h3>
+<ul>
+<li>KPI cards: total customers, products, draft challans, revenue</li>
+<li>Low-stock alert banner</li>
+<li>Recent challans list with quick links</li>
+</ul>
+<h3>Landing Page &amp; Login</h3>
+<ul>
+<li>Public landing page with hero, features, and stats section</li>
+<li>Stats pulled from real database (public API)</li>
+<li>Login page with role-based credential quick-fill panel</li>
+</ul>
+<hr>
+<h2>6. Frontend — Pages &amp; Routing</h2>
+<p>All routes are defined in <code>frontend/src/main.tsx</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Component</th>
+<th>Access</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/</code></td>
+<td><code>LandingPage</code></td>
+<td>Public</td>
+<td>Hero + features + stats</td>
+</tr>
+<tr>
+<td><code>/login</code></td>
+<td><code>LoginPage</code></td>
+<td>Public</td>
+<td>Email/password login</td>
+</tr>
+<tr>
+<td><code>/dashboard</code></td>
+<td><code>DashboardPage</code></td>
+<td>Authenticated</td>
+<td>KPIs + recent activity</td>
+</tr>
+<tr>
+<td><code>/customers</code></td>
+<td><code>CustomerListPage</code></td>
+<td>Authenticated</td>
+<td>Paginated customer list</td>
+</tr>
+<tr>
+<td><code>/customers/new</code></td>
+<td><code>CustomerFormPage</code></td>
+<td>ADMIN, SALES</td>
+<td>Create customer</td>
+</tr>
+<tr>
+<td><code>/customers/:id</code></td>
+<td><code>CustomerDetailPage</code></td>
+<td>Authenticated</td>
+<td>Detail + follow-ups</td>
+</tr>
+<tr>
+<td><code>/customers/:id/edit</code></td>
+<td><code>CustomerFormPage</code></td>
+<td>ADMIN, SALES</td>
+<td>Edit customer</td>
+</tr>
+<tr>
+<td><code>/products</code></td>
+<td><code>ProductListPage</code></td>
+<td>Authenticated</td>
+<td>Paginated product list</td>
+</tr>
+<tr>
+<td><code>/products/new</code></td>
+<td><code>ProductFormPage</code></td>
+<td>ADMIN, WAREHOUSE</td>
+<td>Create product</td>
+</tr>
+<tr>
+<td><code>/products/:id</code></td>
+<td><code>ProductDetailPage</code></td>
+<td>Authenticated</td>
+<td>Detail + stock movements</td>
+</tr>
+<tr>
+<td><code>/products/:id/edit</code></td>
+<td><code>ProductFormPage</code></td>
+<td>ADMIN, WAREHOUSE</td>
+<td>Edit product</td>
+</tr>
+<tr>
+<td><code>/challans</code></td>
+<td><code>ChallanListPage</code></td>
+<td>Authenticated</td>
+<td>Paginated challan list</td>
+</tr>
+<tr>
+<td><code>/challans/new</code></td>
+<td><code>ChallanFormPage</code></td>
+<td>ADMIN, SALES</td>
+<td>Create challan</td>
+</tr>
+<tr>
+<td><code>/challans/:id</code></td>
+<td><code>ChallanDetailPage</code></td>
+<td>Authenticated</td>
+<td>Detail + PDF download</td>
+</tr>
+<tr>
+<td><code>/users</code></td>
+<td><code>UsersPage</code></td>
+<td>ADMIN only</td>
+<td>User management</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>Redirect → <code>/</code></td>
+<td>—</td>
+<td>Catch-all</td>
+</tr>
+</tbody></table>
+<h3>Key UI Components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Layout</code> (DashboardLayout)</td>
+<td><code>components/Layout.tsx</code></td>
+<td>Sidebar + header + content area</td>
+</tr>
+<tr>
+<td><code>Sidebar</code></td>
+<td><code>components/Sidebar.tsx</code></td>
+<td>Navigation with role-based visibility</td>
+</tr>
+<tr>
+<td><code>Header</code></td>
+<td><code>components/Header.tsx</code></td>
+<td>Breadcrumbs, profile dropdown, sticky blur</td>
+</tr>
+<tr>
+<td><code>ProtectedRoute</code></td>
+<td><code>components/ProtectedRoute.tsx</code></td>
+<td>Auth + role guard wrapper</td>
+</tr>
+<tr>
+<td><code>Pagination</code></td>
+<td><code>components/Pagination.tsx</code></td>
+<td>Reusable page controls</td>
+</tr>
+<tr>
+<td><code>Modal</code></td>
+<td><code>components/Modal.tsx</code></td>
+<td>Reusable dialog</td>
+</tr>
+<tr>
+<td><code>Toast</code></td>
+<td><code>components/Toast.tsx</code></td>
+<td>Notification toasts</td>
+</tr>
+<tr>
+<td><code>MaskedHeading</code></td>
+<td><code>components/landing/MaskedHeading.tsx</code></td>
+<td>Animated text reveal (GSAP)</td>
+</tr>
+<tr>
+<td><code>HeroSection</code></td>
+<td><code>components/landing/HeroSection.tsx</code></td>
+<td>Landing hero with CTA</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. Backend — Modules &amp; Structure</h2>
+<pre><code>backend/src/
+├── index.ts                        # Express app entry point
+├── config/
+│   ├── env.ts                      # Environment variable loader
+│   └── prisma.ts                   # Prisma client singleton
+├── middleware/
+│   ├── auth.ts                     # JWT verify + role authorize
+│   └── errorHandler.ts             # Centralized error handler
+├── modules/
+│   ├── auth/
+│   │   ├── authRoutes.ts           # /login, /register, /profile
+│   │   └── authController.ts       # bcrypt + JWT logic
+│   ├── customer/
+│   │   ├── customerRoutes.ts       # CRUD + follow-ups
+│   │   └── customerController.ts   # Customer business logic
+│   ├── product/
+│   │   ├── productRoutes.ts        # CRUD + stock + low-stock
+│   │   └── productController.ts    # Stock movement logic
+│   ├── challan/
+│   │   ├── challanRoutes.ts        # CRUD + confirm + cancel + invoice
+│   │   └── challanController.ts    # Stock atomicity + PDFKit
+│   └── user/
+│       ├── userRoutes.ts           # User CRUD (admin only)
+│       └── userController.ts       # User management logic
+└── utils/
+    ├── validations.ts              # express-validator rule sets
+    └── validateResult.ts           # Validation error handler
+</code></pre>
+<h3>Request Lifecycle</h3>
+<pre><code>Incoming Request
+    │
+    ▼
+express.json() / CORS / Helmet
+    │
+    ▼
+Route Matching (router)
+    │
+    ▼
+authenticate() middleware          ← verifies JWT, attaches req.user
+    │
+    ▼
+authorize(roles) middleware        ← checks role against allowed list
+    │
+    ▼
+validation middleware              ← express-validator rules
+    │
+    ▼
+validateResult()                   ← returns 400 with errors if any
+    │
+    ▼
+Controller function                ← business logic + Prisma queries
+    │
+    ▼
+Response: { success, data?, message?, pagination? }
+    │
+    ▼
+errorHandler()                    ← catches unhandled errors, returns 500
+</code></pre>
+<hr>
+<h2>8. API Reference</h2>
+<p><strong>Base URL:</strong> <code>https://funds-room-project.onrender.com/api</code></p>
+<p><strong>Response format:</strong></p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;optional message&quot;,
+  &quot;data&quot;: { },
+  &quot;errors&quot;: [{ &quot;field&quot;: &quot;...&quot;, &quot;message&quot;: &quot;...&quot; }],
+  &quot;pagination&quot;: { &quot;page&quot;: 1, &quot;limit&quot;: 10, &quot;total&quot;: 50, &quot;totalPages&quot;: 5, &quot;hasNextPage&quot;: true, &quot;hasPrevPage&quot;: false }
+}
+</code></pre>
+<h3>Health Check</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/</code></td>
+<td>None</td>
+<td>API info JSON</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/health</code></td>
+<td>None</td>
+<td><code>{&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:&quot;...&quot;}</code></td>
+</tr>
+</tbody></table>
+<h3>Authentication</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Body / Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>POST</td>
+<td><code>/auth/login</code></td>
+<td>None</td>
+<td><code>{ &quot;email&quot;, &quot;password&quot; }</code> → returns <code>{ token, user }</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/register</code></td>
+<td>ADMIN</td>
+<td><code>{ &quot;name&quot;, &quot;email&quot;, &quot;password&quot;, &quot;role&quot; }</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/auth/profile</code></td>
+<td>Any</td>
+<td>Returns current user profile</td>
+</tr>
+</tbody></table>
+<h3>Customers</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/customers?page=1&amp;limit=10</code></td>
+<td>Any</td>
+<td>Paginated list with search</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/customers</code></td>
+<td>ADMIN, SALES</td>
+<td>Create customer</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/customers/:id</code></td>
+<td>Any</td>
+<td>Get customer with follow-ups and challans</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/customers/:id</code></td>
+<td>ADMIN, SALES</td>
+<td>Update customer</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/customers/:id</code></td>
+<td>ADMIN</td>
+<td>Delete customer</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/customers/:id/follow-ups</code></td>
+<td>ADMIN, SALES, ACCOUNTS</td>
+<td>Add follow-up note</td>
+</tr>
+</tbody></table>
+<h3>Products</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/products?page=1&amp;limit=10</code></td>
+<td>Any</td>
+<td>Paginated list with search</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/products</code></td>
+<td>ADMIN, WAREHOUSE</td>
+<td>Create product</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/products/low-stock</code></td>
+<td>Any</td>
+<td>Products below minStockAlert</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/products/stock-movements?page=1&amp;limit=10</code></td>
+<td>Any</td>
+<td>Global stock movement ledger</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/products/:id</code></td>
+<td>Any</td>
+<td>Product detail with stock movements</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/products/:id</code></td>
+<td>ADMIN, WAREHOUSE</td>
+<td>Update product details</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/products/:id/stock</code></td>
+<td>ADMIN, WAREHOUSE</td>
+<td>Log manual stock adjustment</td>
+</tr>
+</tbody></table>
+<h3>Challans</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/challans/public/stats</code></td>
+<td>None</td>
+<td>Public stats for landing page</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/challans/dashboard/stats</code></td>
+<td>Any</td>
+<td>Full dashboard KPIs</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/challans?page=1&amp;limit=10</code></td>
+<td>Any</td>
+<td>Paginated list with filters</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/challans</code></td>
+<td>ADMIN, SALES</td>
+<td>Create challan with line items</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/challans/:id</code></td>
+<td>Any</td>
+<td>Challan detail with items</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/challans/:id/invoice</code></td>
+<td>Any</td>
+<td>Download PDF invoice</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/challans/:id</code></td>
+<td>ADMIN, SALES</td>
+<td>Update challan (draft only)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/challans/:id/confirm</code></td>
+<td>ADMIN, SALES, WAREHOUSE</td>
+<td>Confirm (decrements stock)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/challans/:id/cancel</code></td>
+<td>ADMIN, SALES</td>
+<td>Cancel (restores stock)</td>
+</tr>
+</tbody></table>
+<h3>Users (Admin Only)</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Auth</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/users?page=1&amp;limit=10</code></td>
+<td>ADMIN</td>
+<td>Paginated user list</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/users</code></td>
+<td>ADMIN</td>
+<td>Create user</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/users/:id</code></td>
+<td>ADMIN</td>
+<td>Update user</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/users/:id</code></td>
+<td>ADMIN</td>
+<td>Delete user</td>
+</tr>
+</tbody></table>
+<h3>Using the Postman Collection</h3>
+<ol>
+<li>Import <code>postman/FundsRoom.postman_collection.json</code> into Postman.</li>
+<li>Run <strong>Auth → Login (Admin)</strong> — the test script auto-saves the JWT to <code>{{token}}</code>.</li>
+<li>All other requests inherit the token via the collection-level Bearer auth.</li>
+<li>Switch roles by running a different Login request.</li>
+<li>Set <code>{{customerId}}</code>, <code>{{productId}}</code>, <code>{{challanId}}</code> variables manually or from response save scripts.</li>
+</ol>
+<hr>
+<h2>9. Authentication &amp; Role-Based Access</h2>
+<h3>JWT Authentication</h3>
+<ul>
+<li>On login, the server returns a signed JWT containing <code>{ userId, role }</code>.</li>
+<li>The token is stored in <code>localStorage</code> under the key <code>fundsroom_token</code>.</li>
+<li>Every authenticated request includes <code>Authorization: Bearer &lt;token&gt;</code>.</li>
+<li>Tokens expire after <code>JWT_EXPIRES_IN</code> (default: 7 days).</li>
+<li>On 401 responses (non-login), the frontend clears storage and redirects to <code>/login</code>.</li>
+</ul>
+<h3>Role Permissions Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th align="center">ADMIN</th>
+<th align="center">SALES</th>
+<th align="center">WAREHOUSE</th>
+<th align="center">ACCOUNTS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Login</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>View Dashboard</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td><strong>Customers</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>View customers</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>Create customer</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Edit customer</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Delete customer</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Add follow-up</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td><strong>Products</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>View products</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>Create product</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Edit product</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Log stock movement</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td><strong>Challans</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>View challans</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td>Create challan</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Edit challan</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Confirm challan</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Cancel challan</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td>Download invoice PDF</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td><strong>Users</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>Manage users</td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+</tbody></table>
+<h3>Enforcement Points</h3>
+<ul>
+<li><strong>Backend</strong>: <code>authenticate()</code> middleware verifies JWT; <code>authorize(&#39;ADMIN&#39;, &#39;SALES&#39;)</code> checks <code>req.user.role</code>.</li>
+<li><strong>Frontend</strong>: <code>ProtectedRoute</code> component wraps routes with <code>allowedRoles</code> prop; conditional rendering hides buttons/links for unauthorized roles (e.g., &quot;New Challan&quot; button only shown for ADMIN/SALES).</li>
+</ul>
+<hr>
+<h2>10. Challan Lifecycle &amp; Stock Workflow</h2>
+<pre><code>                    ┌──────────────────┐
+                    │   Create Challan │  (ADMIN, SALES)
+                    │  status = DRAFT  │
+                    └────────┬─────────┘
+                             │
+              ┌──────────────┴──────────────┐
+              │                             │
+              ▼                             ▼
+    ┌───────────────────┐        ┌────────────────────┐
+    │   Confirm Challan │        │   Cancel Challan   │
+    │ (ADMIN,SALES,WH) │        │   (ADMIN, SALES)   │
+    └────────┬──────────┘        └────────┬───────────┘
+             │                            │
+             ▼                            ▼
+    ┌───────────────────┐        ┌────────────────────┐
+    │ status=CONFIRMED  │        │ status=CANCELLED   │
+    │                   │        │                    │
+    │ For each item:    │        │ If was CONFIRMED:  │
+    │  1. Check stock   │        │  1. Restore stock  │
+    │     ≥ quantity?   │        │  2. Write IN move  │
+    │  2. If ANY short: │        └────────────────────┘
+    │     REJECT ALL    │
+    │  3. If all OK:    │
+    │     Decrement     │
+    │     Write OUT move│
+    └───────────────────┘
+</code></pre>
+<h3>Stock Atomicity</h3>
+<p>The confirm operation runs inside a <strong>Prisma interactive transaction</strong>:</p>
+<ol>
+<li><strong>Read lock</strong> — re-reads all products within the transaction.</li>
+<li><strong>Validation</strong> — checks every line item has sufficient <code>currentStock</code>.</li>
+<li><strong>Rejection</strong> — if any single line is short, the entire transaction is rolled back and an error lists all insufficient products.</li>
+<li><strong>Execution</strong> — if all lines pass, stock is decremented and <code>StockMovement</code> records (type <code>OUT</code>) are written in the same transaction.</li>
+</ol>
+<p>This guarantees <strong>all-or-nothing</strong> stock updates — no partial decrements ever occur.</p>
+<hr>
+<h2>11. PDF Invoice Generation</h2>
+<ul>
+<li>Endpoint: <code>GET /api/challans/:id/invoice</code></li>
+<li>Returns: <code>application/pdf</code> with <code>Content-Disposition: attachment</code></li>
+<li>Generated by <strong>PDFKit</strong> on the server</li>
+<li>Layout: branded header with &quot;FundsRoom&quot; logo, challan metadata (number, date, status), customer details, line-item table (product, SKU, qty, price, subtotal), grand total, and a footer with generation timestamp</li>
+<li>Single-page A4 output</li>
+<li>Accessible to any authenticated user</li>
+</ul>
+<hr>
+<h2>12. Local Development Setup</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li><strong>Node.js</strong> 18–20</li>
+<li><strong>PostgreSQL</strong> local install, Docker, or Neon cloud</li>
+<li><strong>Git</strong></li>
+</ul>
+<h3>Step 1 — Clone</h3>
+<pre><code class="language-bash">git clone https://github.com/Rakesh452-beep/Funds-Room-Project.git
+cd Funds-Room-Project
+</code></pre>
+<h3>Step 2 — Backend</h3>
+<pre><code class="language-bash">cd backend
+
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env — set DATABASE_URL and JWT_SECRET
+
+# Generate Prisma client
+npx prisma generate
+
+# Run migrations (creates tables)
+npx prisma migrate dev
+
+# Seed demo data (optional — creates 4 role-based users + sample data)
+npm run prisma:seed
+
+# Start dev server (http://localhost:5000)
+npm run dev
+</code></pre>
+<h3>Step 3 — Frontend</h3>
+<pre><code class="language-bash">cd frontend
+
+# Install dependencies
+npm install
+
+# Start dev server (http://localhost:5173)
+npm run dev
+</code></pre>
+<p>The Vite dev server proxies <code>/api</code> requests to <code>localhost:5000</code> automatically.</p>
+<h3>Step 4 — Verify</h3>
+<ul>
+<li>Open <a href="http://localhost:5173">http://localhost:5173</a></li>
+<li>Login with <code>admin@fundsroom.com</code> / <code>password123</code></li>
+<li>Check dashboard loads with stats</li>
+</ul>
+<hr>
+<h2>13. Docker Setup</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Docker + Docker Compose installed</li>
+</ul>
+<h3>Run</h3>
+<pre><code class="language-bash">docker compose up --build
+</code></pre>
+<p>This starts three services:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>URL</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>frontend</td>
+<td><a href="http://localhost">http://localhost</a></td>
+<td>React SPA served by nginx</td>
+</tr>
+<tr>
+<td>backend</td>
+<td><a href="http://localhost:5000">http://localhost:5000</a></td>
+<td>Express API</td>
+</tr>
+<tr>
+<td>postgres</td>
+<td>localhost:5432</td>
+<td>PostgreSQL 16 database</td>
+</tr>
+</tbody></table>
+<p>Nginx is configured to proxy <code>/api/*</code> requests to the backend service. The frontend build is served as static files.</p>
+<h3>Docker Architecture</h3>
+<pre><code>Browser → http://localhost
+              │
+              ▼ (nginx)
+         ┌────────────────────┐
+         │  frontend (nginx)  │
+         │  Serves SPA files  │
+         │  /api/* → backend  │
+         └────────┬───────────┘
+                  │  proxy_pass
+                  ▼
+         ┌────────────────────┐
+         │  backend (Node)    │
+         │  Express API       │
+         └────────┬───────────┘
+                  │  Prisma
+                  ▼
+         ┌────────────────────┐
+         │  postgres (PG 16)  │
+         └────────────────────┘
+</code></pre>
+<hr>
+<h2>14. Deployment</h2>
+<h3>Frontend → Vercel</h3>
+<ol>
+<li>Connect GitHub repo to Vercel.</li>
+<li>Set <strong>Root Directory</strong> to <code>frontend</code>.</li>
+<li>Framework: <strong>Vite</strong>. Build command: <code>npm run build</code>. Output: <code>dist</code>.</li>
+<li>Deploy — Vercel auto-builds on push to <code>master</code>.</li>
+<li><code>frontend/vercel.json</code> handles:<ul>
+<li><strong>SPA fallback</strong>: all non-file routes → <code>index.html</code></li>
+<li><strong>API proxy</strong>: <code>/api/(.*)</code> → <code>https://funds-room-project.onrender.com/api/$1</code></li>
+</ul>
+</li>
+</ol>
+<h3>Backend → Render</h3>
+<ol>
+<li>Create a <strong>Web Service</strong> from the GitHub repo.</li>
+<li>Set <strong>Root Directory</strong> to <code>backend</code>.</li>
+<li><strong>Build Command</strong>: <code>npm install &amp;&amp; npx prisma generate &amp;&amp; npm run build</code></li>
+<li><strong>Start Command</strong>: <code>npm start</code></li>
+<li><strong>Environment</strong>:<ul>
+<li><code>DATABASE_URL</code> — Neon pooled connection string</li>
+<li><code>JWT_SECRET</code> — strong random string</li>
+<li><code>JWT_EXPIRES_IN</code> — <code>7d</code></li>
+<li><code>NODE_ENV</code> — <code>production</code></li>
+<li><code>PORT</code> — <code>5000</code></li>
+<li><code>FRONTEND_URL</code> — <code>https://funds-room-project-gamma.vercel.app</code></li>
+<li><code>CORS_ORIGINS</code> — <code>https://funds-room-project-gamma.vercel.app,http://localhost:5173</code></li>
+</ul>
+</li>
+<li>Run <code>npx prisma migrate deploy</code> once via Render Shell to create tables.</li>
+<li>Render free tier: backend sleeps after ~15 min inactivity (cold start ~30-60s).</li>
+</ol>
+<h3>Database → Neon</h3>
+<ol>
+<li>Create a Neon PostgreSQL project.</li>
+<li>Copy the <strong>pooled</strong> connection string.</li>
+<li>Paste into <code>DATABASE_URL</code> on Render.</li>
+<li>The schema is applied by Prisma migrations (no manual SQL needed).</li>
+</ol>
+<hr>
+<h2>15. CI/CD Pipeline</h2>
+<p><code>.github/workflows/ci.yml</code> runs on every push and PR to <code>master</code>:</p>
+<pre><code class="language-yaml">Jobs:
+  backend:
+    - Checkout
+    - Setup Node 20
+    - npm ci (backend/)
+    - npx prisma generate
+    - npx tsc --noEmit (type check)
+    - npm run build
+
+  frontend:
+    - Checkout
+    - Setup Node 20
+    - npm ci (frontend/)
+    - npx tsc --noEmit (type check)
+    - npm run build
+</code></pre>
+<p>Both jobs run in parallel. A type error or build failure in either blocks the merge.</p>
+<hr>
+<h2>16. Environment Variables</h2>
+<h3>Backend (<code>backend/.env</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DATABASE_URL</code></td>
+<td>Yes</td>
+<td><code>postgresql://user:pass@host:5432/fundsroom</code></td>
+<td>Neon pooled connection string</td>
+</tr>
+<tr>
+<td><code>JWT_SECRET</code></td>
+<td>Yes</td>
+<td><code>your-super-secret-key</code></td>
+<td>JWT signing secret</td>
+</tr>
+<tr>
+<td><code>JWT_EXPIRES_IN</code></td>
+<td>No</td>
+<td><code>7d</code></td>
+<td>Token lifetime (default: 7d)</td>
+</tr>
+<tr>
+<td><code>PORT</code></td>
+<td>No</td>
+<td><code>5000</code></td>
+<td>Server port (default: 5000)</td>
+</tr>
+<tr>
+<td><code>NODE_ENV</code></td>
+<td>No</td>
+<td><code>production</code></td>
+<td>Environment mode</td>
+</tr>
+<tr>
+<td><code>FRONTEND_URL</code></td>
+<td>No</td>
+<td><code>https://...vercel.app</code></td>
+<td>Allowed CORS origin</td>
+</tr>
+<tr>
+<td><code>CORS_ORIGINS</code></td>
+<td>No</td>
+<td><code>https://...,http://...</code></td>
+<td>Comma-separated CORS origins</td>
+</tr>
+</tbody></table>
+<h3>Frontend (via Vite env or proxy)</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VITE_API_URL</code></td>
+<td><code>/api</code></td>
+<td>API base URL (relative works everywhere)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>17. Project File Structure</h2>
+<pre><code>Funds-Room-Project/
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml                          # GitHub Actions CI pipeline
+│
+├── backend/
+│   ├── .node-version                       # Node 20.11.1 (Render auto-detects)
+│   ├── package.json                        # Dependencies + scripts
+│   ├── prisma/
+│   │   ├── schema.prisma                   # Database schema + enums
+│   │   └── seed.ts                         # Seed script (demo users + data)
+│   └── src/
+│       ├── index.ts                        # Express app entry
+│       ├── config/
+│       │   ├── env.ts                      # Env variable loader
+│       │   └── prisma.ts                   # Prisma client singleton
+│       ├── middleware/
+│       │   ├── auth.ts                     # JWT authenticate + authorize
+│       │   └── errorHandler.ts             # Centralized error handler
+│       ├── modules/
+│       │   ├── auth/
+│       │   │   ├── authRoutes.ts
+│       │   │   └── authController.ts
+│       │   ├── customer/
+│       │   │   ├── customerRoutes.ts
+│       │   │   └── customerController.ts
+│       │   ├── product/
+│       │   │   ├── productRoutes.ts
+│       │   │   └── productController.ts
+│       │   ├── challan/
+│       │   │   ├── challanRoutes.ts
+│       │   │   └── challanController.ts
+│       │   └── user/
+│       │       ├── userRoutes.ts
+│       │       └── userController.ts
+│       └── utils/
+│           ├── validations.ts
+│           └── validateResult.ts
+│
+├── frontend/
+│   ├── Dockerfile                          # Multi-stage build (Node → nginx)
+│   ├── nginx.conf                          # SPA + /api proxy config
+│   ├── vercel.json                         # SPA fallback + /api rewrite
+│   ├── package.json
+│   ├── index.html
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   └── src/
+│       ├── main.tsx                        # React root + router
+│       ├── index.css                       # Global styles + Tailwind
+│       ├── vite-env.d.ts
+│       ├── types/
+│       │   └── index.ts                    # TypeScript interfaces
+│       ├── context/
+│       │   └── AuthContext.tsx             # Auth state + provider
+│       ├── services/
+│       │   ├── api.ts                      # Axios instance + interceptors
+│       │   └── index.ts                    # Service barrel exports
+│       ├── utils/
+│       │   ├── env.ts                      # Env config
+│       │   └── helpers.ts                  # formatCurrency, formatDate, etc.
+│       ├── components/
+│       │   ├── Layout.tsx                  # Dashboard shell (sidebar + header)
+│       │   ├── Sidebar.tsx                 # Role-aware navigation
+│       │   ├── Header.tsx                  # Sticky header with blur
+│       │   ├── ProtectedRoute.tsx          # Auth + role guard
+│       │   ├── Pagination.tsx              # Reusable page controls
+│       │   ├── Modal.tsx                   # Dialog component
+│       │   ├── Toast.tsx                   # Toast notifications
+│       │   ├── Logo.tsx                    # Brand logo
+│       │   ├── Loading.tsx                 # Loading spinner
+│       │   └── landing/
+│       │       ├── HeroSection.tsx         # Landing hero
+│       │       └── MaskedHeading.tsx       # Animated text (GSAP)
+│       └── pages/
+│           ├── LandingPage.tsx
+│           ├── LoginPage.tsx
+│           ├── DashboardPage.tsx
+│           ├── CustomerListPage.tsx
+│           ├── CustomerFormPage.tsx
+│           ├── CustomerDetailPage.tsx
+│           ├── ProductListPage.tsx
+│           ├── ProductFormPage.tsx
+│           ├── ProductDetailPage.tsx
+│           ├── ChallanListPage.tsx
+│           ├── ChallanFormPage.tsx
+│           ├── ChallanDetailPage.tsx
+│           └── UsersPage.tsx
+│
+├── postman/
+│   └── FundsRoom.postman_collection.json   # Importable API collection
+│
+├── .gitignore
+├── .dockerignore
+├── docker-compose.yml
+└── README.md                               # ← This file
+</code></pre>
+<hr>
+<h2>18. Known Limitations &amp; Incomplete Parts</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Limitation</th>
+<th>Impact</th>
+<th>Potential Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>No automated test suite</strong></td>
+<td>Verification relies on CI build + manual testing</td>
+<td>Add Vitest (frontend) + Jest (backend) with integration tests</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Render free tier cold starts</strong></td>
+<td>Backend sleeps after ~15 min inactivity; first request takes ~30-60s</td>
+<td>Upgrade to paid tier or add keep-alive ping</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>No product image upload</strong></td>
+<td><code>imageUrl</code> column exists but upload UI/storage removed</td>
+<td>Re-add with S3, Vercel Blob, or Cloudinary</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Single-tenant</strong></td>
+<td>No organization/multi-tenant separation</td>
+<td>Add <code>organizationId</code> FK to all models</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>PDF invoice not GST-compliant</strong></td>
+<td>Print-ready but not e-invoicing/filing ready</td>
+<td>Integrate GST API + proper invoice numbering</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Daily challan numbering resets</strong></td>
+<td><code>CH-YYYYMMDD-NNN</code> resets each day; not globally gapless</td>
+<td>Use database sequence or UUID-based numbering</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>No refresh tokens / password reset</strong></td>
+<td>JWTs valid until expiry; users must re-login</td>
+<td>Add refresh token rotation + email-based password reset</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Stats computed on-the-fly</strong></td>
+<td>Dashboard/landing queries run live; not cached</td>
+<td>Add Redis cache or materialized views for scale</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Pagination returns one page</strong></td>
+<td>Some list UIs only render the current page</td>
+<td>Add &quot;load more&quot; or virtual scrolling for full dataset access</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>No role self-service editing</strong></td>
+<td>Users cannot change their own profile/password</td>
+<td>Add profile edit endpoint + frontend page</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>19. Quick Links</h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Frontend (Live)</strong></td>
+<td><a href="https://funds-room-project-gamma.vercel.app">https://funds-room-project-gamma.vercel.app</a></td>
+</tr>
+<tr>
+<td><strong>Backend API (Live)</strong></td>
+<td><a href="https://funds-room-project.onrender.com">https://funds-room-project.onrender.com</a></td>
+</tr>
+<tr>
+<td><strong>Health Check</strong></td>
+<td><a href="https://funds-room-project.onrender.com/api/health">https://funds-room-project.onrender.com/api/health</a></td>
+</tr>
+<tr>
+<td><strong>GitHub Repo</strong></td>
+<td><a href="https://github.com/Rakesh452-beep/Funds-Room-Project">https://github.com/Rakesh452-beep/Funds-Room-Project</a></td>
+</tr>
+<tr>
+<td><strong>Postman Collection</strong></td>
+<td><code>postman/FundsRoom.postman_collection.json</code></td>
+</tr>
+<tr>
+<td><strong>README</strong></td>
+<td><code>README.md</code> (this file)</td>
+</tr>
+</tbody></table>
+<h3>Test Credentials</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Email</th>
+<th>Password</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Admin</td>
+<td><code>admin@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+<tr>
+<td>Sales</td>
+<td><code>sales@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+<tr>
+<td>Warehouse</td>
+<td><code>warehouse@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+<tr>
+<td>Accounts</td>
+<td><code>accounts@fundsroom.com</code></td>
+<td><code>password123</code></td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>Built with React, Express, Prisma, PostgreSQL — hosted on Vercel + Render + Neon.</strong></p>
+<p>© 2026 FundsRoom. Demo project.</p>
+
+</body></html>

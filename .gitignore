@@ -10,4 +10,4 @@ coverage
 
 # Vercel / Render local artifacts
 .vercel
-.runtime
+.runtime~$*.docx
