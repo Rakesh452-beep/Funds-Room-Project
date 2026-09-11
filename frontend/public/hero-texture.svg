@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1C1917"/>
+      <stop offset="0.45" stop-color="#3F2D1D"/>
+      <stop offset="0.75" stop-color="#365314"/>
+      <stop offset="1" stop-color="#1A2E05"/>
+    </linearGradient>
+    <radialGradient id="ember" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#EA580C" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#EA580C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lime" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#84CC16" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#84CC16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cream" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FDE68A" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#FDE68A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="90"/>
+    </filter>
+    <filter id="blurSmall" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg)"/>
+
+  <g filter="url(#blur)">
+    <circle cx="880" cy="180" r="320" fill="url(#ember)"/>
+    <circle cx="260" cy="620" r="360" fill="url(#lime)"/>
+    <circle cx="1000" cy="680" r="260" fill="url(#cream)"/>
+  </g>
+
+  <g filter="url(#blurSmall)">
+    <circle cx="620" cy="300" r="160" fill="#FDBA74" fill-opacity="0.28"/>
+  </g>
+
+  <rect width="1200" height="800" fill="url(#grid)"/>
+
+  <circle cx="600" cy="400" r="360" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1.5"/>
+  <circle cx="600" cy="400" r="610" fill="none" stroke="#FFFFFF" stroke-opacity="0.04" stroke-width="1"/>
+</svg>

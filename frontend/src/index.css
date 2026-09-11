@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Instrument Sans', system-ui, sans-serif; background: #FFFFFF; color: #000000; line-height: 1.5; }
+  ::selection { background: rgba(210, 232, 35, 0.45); color: #000000; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 100px; }
+  ::-webkit-scrollbar-thumb:hover { background: #A3A3A3; }
+}
+
+@layer components {
+  /* ---------- Buttons ---------- */
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #E9C0E9; color: #3B0F3B; border: 1px solid #E0A9E0; cursor: pointer;
+    font-size: 14px; font-weight: 600; font-family: 'Instrument Sans', sans-serif;
+    padding: 12px 24px; border-radius: 12px; transition: all 0.25s ease;
+  }
+  .btn-primary:hover { background: #F4CFEF; border-color: #E9C0E9; transform: translateY(-2px); box-shadow: 0 14px 40px -10px rgba(233,192,233,0.7); }
+  .btn-primary:active { transform: translateY(0) scale(0.97); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-lime {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #D2E823; color: #11150A; border: 1px solid #AFC216; cursor: pointer;
+    font-size: 14px; font-weight: 600; font-family: 'Instrument Sans', sans-serif;
+    padding: 12px 24px; border-radius: 12px; transition: all 0.25s ease;
+  }
+  .btn-lime:hover { background: #DBE853; border-color: #D2E823; transform: translateY(-2px); box-shadow: 0 14px 40px -10px rgba(210,232,35,0.6); }
+  .btn-lime:active { transform: translateY(0) scale(0.97); }
+  .btn-lime:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-accent {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #E9C0E9; color: #3B0F3B; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 600; font-family: 'Instrument Sans', sans-serif;
+    padding: 12px 24px; border-radius: 12px; transition: all 0.25s ease;
+  }
+  .btn-accent:hover { background: #F4CFEF; transform: translateY(-2px); box-shadow: 0 14px 40px -10px rgba(233,192,233,0.7); }
+  .btn-accent:active { transform: translateY(0) scale(0.97); }
+  .btn-accent:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-black {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #000000; color: #FFFFFF; border: 1px solid #000000; cursor: pointer;
+    font-size: 14px; font-weight: 600; font-family: 'Instrument Sans', sans-serif;
+    padding: 12px 24px; border-radius: 12px; transition: all 0.25s ease;
+  }
+  .btn-black:hover { background: #1A1A1A; border-color: #262626; transform: translateY(-2px); box-shadow: 0 14px 40px -10px rgba(0,0,0,0.45); }
+  .btn-black:active { transform: translateY(0) scale(0.97); }
+  .btn-black:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: transparent; color: #262626; border: 1px solid #E0E0E0; cursor: pointer;
+    font-size: 14px; font-weight: 500; font-family: 'Instrument Sans', sans-serif;
+    padding: 12px 24px; border-radius: 12px; transition: all 0.25s ease;
+  }
+  .btn-outline:hover { background: #F5F5F5; border-color: #A3A3A3; transform: translateY(-1px); }
+  .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #F5F5F5; color: #262626; border: 1px solid #E0E0E0; cursor: pointer;
+    font-size: 14px; font-weight: 500; font-family: 'Instrument Sans', sans-serif;
+    padding: 12px 24px; border-radius: 12px; transition: all 0.25s ease;
+  }
+  .btn-secondary:hover { background: #EDEDED; border-color: #A3A3A3; transform: translateY(-1px); }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+    font-size: 13px; font-weight: 500; color: #737373; background: transparent;
+    border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-ghost:hover { color: #000000; background: #F5F5F5; }
+
+  /* ---------- Inputs ---------- */
+  .input {
+    width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 14px;
+    font-family: 'Instrument Sans', sans-serif; color: #111111;
+    background: #FFFFFF; border: 1px solid #E0E0E0;
+    transition: all 0.2s ease; outline: none;
+  }
+  .input::placeholder { color: #A3A3A3; }
+  .input:focus { border-color: #AFC216; box-shadow: 0 0 0 4px rgba(210,232,35,0.25); }
+  .input:hover:not(:focus) { border-color: #A3A3A3; }
+  .input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: #FFFFFF; border: 1px solid #EDEDED; border-radius: 1.25rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    transition: all 0.3s ease;
+  }
+  .card:hover { border-color: #C9D857; box-shadow: 0 16px 40px -12px rgba(0,0,0,0.12); }
+
+  .card-surface {
+    background: #FAFAFA; border: 1px solid #EDEDED; border-radius: 1.25rem;
+  }
+
+  /* ---------- Badges ---------- */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px;
+    font-size: 10px; font-weight: 600; border-radius: 999px; font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.03em;
+    transition: all 0.2s ease;
+  }
+  .badge-admin { background: #FAE5F5; color: #8A3E82; border: 1px solid #F4CFEF; }
+  .badge-admin:hover { background: #F4CFEF; }
+  .badge-sales { background: #F5FBC5; color: #5A680A; border: 1px solid #EDF6A0; }
+  .badge-sales:hover { background: #EDF6A0; }
+  .badge-warehouse { background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+  .badge-accounts { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+  .badge-active { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+  .badge-lead { background: #FAE5F5; color: #8A3E82; border: 1px solid #F4CFEF; }
+  .badge-inactive { background: #F5F5F5; color: #737373; border: 1px solid #E0E0E0; }
+  .badge-confirmed { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+  .badge-draft { background: #FAE5F5; color: #8A3E82; border: 1px solid #F4CFEF; }
+  .badge-cancelled { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; }
+
+  /* ---------- Nav (dark admin sidebar) ---------- */
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    margin: 2px 12px; border-radius: 12px; font-size: 13px; font-weight: 500;
+    color: rgba(255,255,255,0.55); transition: all 0.2s ease; text-decoration: none;
+    position: relative;
+  }
+  .nav-item:hover { color: #FFFFFF; background: rgba(255,255,255,0.06); transform: translateX(2px); }
+  .nav-item:hover svg { transform: scale(1.12) rotate(-3deg); }
+  .nav-item svg { transition: transform 0.2s ease; }
+  .nav-item-active { color: #11150A; background: #D2E823; font-weight: 600; box-shadow: 0 8px 24px -8px rgba(210,232,35,0.6); }
+  .nav-item-active:hover { color: #11150A; background: #DBE853; transform: translateX(0); }
+  .nav-item-active svg { color: #11150A; }
+
+  /* ---------- Tables ---------- */
+  .table-header {
+    padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em; color: #737373;
+    background: #FAFAFA; font-family: 'IBM Plex Mono', monospace;
+    border-bottom: 1px solid #EDEDED;
+  }
+  .table-cell {
+    padding: 14px 16px; font-size: 13px; color: #525252;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  tr:hover .table-cell { color: #000000; }
+
+  /* ---------- KPI ---------- */
+  .kpi-card {
+    background: #FFFFFF; border: 1px solid #EDEDED; border-radius: 1.25rem; padding: 24px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .kpi-card:hover { transform: translateY(-6px); box-shadow: 0 20px 44px -14px rgba(0,0,0,0.18); }
+
+  /* ---------- Eyebrow label ---------- */
+  .eyebrow {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #A3A3A3; font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ---------- Landing accents ---------- */
+  .pill-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 12px;
+    background: #FFFFFF; border: 1px solid #E0E0E0;
+    font-size: 14px; font-weight: 500; color: #262626;
+    transition: all 0.2s ease;
+  }
+  .pill-badge:hover { border-color: #A3A3A3; transform: translateY(-1px); }
+  .pill-accent {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 999px;
+    background: #FAE5F5; border: 1px solid rgba(174,78,164,0.25);
+    font-size: 12px; font-weight: 600; font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.04em; color: #8A3E82;
+  }
+  .serif-accent { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; }
+}

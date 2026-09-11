@@ -1,0 +1,30 @@
+# Render Blueprint — FundsRoom Backend API
+# Deploys the Node/Express API on the free tier.
+# After deploying, replace the placeholder DATABASE_URL below with your
+# Neon (or Supabase) Postgres connection string (add ?sslmode=require).
+
+services:
+  - type: web
+    name: fundsroom-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm start
+    preDeployCommand: npm run prisma:migrate:deploy
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        value: https://fundsroom-frontend.vercel.app
+      - key: CORS_ORIGINS
+        value: https://fundsroom-frontend.vercel.app,http://localhost:5173
+      - key: DATABASE_URL
+        sync: false
