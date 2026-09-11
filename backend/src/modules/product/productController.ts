@@ -293,3 +293,48 @@ export const getLowStockProducts = async (req: Request, res: Response): Promise<
     res.status(500).json({ success: false, message: 'Error fetching low stock products', error: (error as Error).message });
   }
 };
+
+export const uploadProductImage = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Not authenticated' });
+      return;
+    }
+
+    const { id } = req.params as { id: string };
+
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      res.status(404).json({ success: false, message: 'Product not found' });
+      return;
+    }
+
+    const file = (req as any).file as Express.Multer.File | undefined;
+    if (!file) {
+      res.status(400).json({ success: false, message: 'No image file uploaded' });
+      return;
+    }
+
+    const { uploadToS3, isS3Configured } = await import('../../config/s3');
+    if (!isS3Configured()) {
+      res.status(503).json({
+        success: false,
+        message: 'S3 upload unavailable: AWS S3 is not configured on this deployment.',
+      });
+      return;
+    }
+
+    const ext = file.originalname.split('.').pop()?.toLowerCase() || 'jpg';
+    const key = `products/${product.sku}-${Date.now()}.${ext}`;
+    const { url } = await uploadToS3(file.buffer, key, file.mimetype);
+
+    const updated = await prisma.product.update({
+      where: { id },
+      data: { imageUrl: url },
+    });
+
+    res.status(200).json({ success: true, message: 'Image uploaded successfully', data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error uploading image', error: (error as Error).message });
+  }
+};

@@ -22,6 +22,11 @@ services:
       JWT_EXPIRES_IN: 7d
       PORT: 5000
       NODE_ENV: production
+      # Optional AWS S3 for product images (leave blank to disable uploads)
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
     ports:
       - "5000:5000"
     depends_on:

@@ -3,6 +3,7 @@ import prisma from '../../config/prisma';
 import { AuthRequest } from '../../middleware/auth';
 import { asString } from '../../utils/validateResult';
 import { Prisma, ChallanStatus } from '@prisma/client';
+import PDFDocument from 'pdfkit';
 
 type ChallanWithItems = Prisma.ChallanGetPayload<{ include: { items: true } }>;
 type ChallanWithRelations = Prisma.ChallanGetPayload<{
@@ -560,5 +561,99 @@ export const getDashboardStats = async (req: Request, res: Response): Promise<vo
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching dashboard stats', error: (error as Error).message });
+  }
+};
+
+export const downloadChallanInvoice = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Not authenticated' });
+      return;
+    }
+
+    const { id } = req.params as { id: string };
+    const challan = await prisma.challan.findUnique({
+      where: { id },
+      include: {
+        customer: true,
+        items: true,
+        creator: { select: { id: true, name: true, role: true } },
+      },
+    });
+
+    if (!challan) {
+      res.status(404).json({ success: false, message: 'Challan not found' });
+      return;
+    }
+
+    const totalValue = challan.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${challan.challanNumber}-invoice.pdf"`);
+    doc.pipe(res);
+
+    // Header
+    doc.rect(50, 50, 495, 30).fill('#1A1A1A');
+    doc.fill('#FFFFFF').fontSize(16).font('Helvetica-Bold').text('FundsRoom', 60, 57);
+    doc.fill('#D2E823').fontSize(9).font('Helvetica').text('ERP + CRM · INVOICE', 60, 74);
+
+    // Invoice meta
+    doc.fill('#111111').fontSize(11).font('Helvetica-Bold').text('TAX INVOICE', 390, 56);
+    doc.fill('#525252').fontSize(9).font('Helvetica').text(`Invoice No: ${challan.challanNumber}`, 390, 72);
+    doc.text(`Date: ${new Date(challan.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`, 390, 86);
+    doc.text(`Status: ${challan.status}`, 390, 100);
+
+    doc.moveDown(2);
+
+    // Bill to
+    doc.fill('#525252').fontSize(8).text('BILL TO', 50, 135);
+    doc.fill('#111111').fontSize(11).font('Helvetica-Bold').text(challan.customer?.businessName || challan.customer?.name || '—', 50, 146);
+    doc.font('Helvetica').fontSize(9);
+    doc.fill('#525252').text(`Contact: ${challan.customer?.name || '—'}  ·  ${challan.customer?.mobile || '—'}`, 50, 162);
+    doc.text(`Address: ${challan.customer?.address || '—'}`, 50, 176);
+    if (challan.customer?.gstNumber) doc.text(`GSTIN: ${challan.customer.gstNumber}`, 50, 190);
+
+    // Items table
+    const tableTop = 225;
+    const colXs = { product: 60, qty: 220, price: 320, total: 430 };
+
+    doc.rect(50, tableTop - 8, 495, 20).fill('#F5F5F5');
+    doc.fill('#525252').fontSize(8).font('Helvetica-Bold').text('PRODUCT', colXs.product, tableTop);
+    doc.text('QTY', colXs.qty, tableTop);
+    doc.text('UNIT PRICE', colXs.price, tableTop);
+    doc.text('TOTAL', colXs.total, tableTop);
+
+    let y = tableTop + 22;
+    doc.font('Helvetica').fontSize(9);
+    challan.items.forEach((item) => {
+      const lineTotal = item.unitPrice * item.quantity;
+      doc.fill('#111111').text(item.productName, colXs.product, y);
+      doc.text(String(item.quantity), colXs.qty, y);
+      doc.text(`₹ ${item.unitPrice.toFixed(2)}`, colXs.price, y);
+      doc.text(`₹ ${lineTotal.toFixed(2)}`, colXs.total, y);
+      y += 18;
+      doc.moveTo(50, y).lineTo(545, y).strokeColor('#EDEDED').lineWidth(0.5).stroke();
+      y += 4;
+    });
+
+    // Totals
+    const totalsY = Math.max(y, tableTop + 60) + 10;
+    doc.rect(50, totalsY - 12, 495, 1).fill('#EDEDED');
+    doc.font('Helvetica-Bold').fontSize(10).fill('#111111');
+    doc.text('Total Quantity', 380, totalsY + 4);
+    doc.text(String(challan.totalQuantity), 500, totalsY + 4);
+    doc.text('Total Amount', 380, totalsY + 22);
+    doc.text(`₹ ${totalValue.toFixed(2)}`, 500, totalsY + 22);
+
+    // Footer
+    doc.fill('#737373').fontSize(8).font('Helvetica')
+      .text('THANK YOU FOR YOUR BUSINESS', 50, 780, { align: 'center' })
+      .text('FundsRoom ERP + CRM · Generated automatically · This is a computer-generated invoice.', 50, 794, { align: 'center' });
+
+    doc.end();
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error generating invoice PDF', error: (error as Error).message });
   }
 };

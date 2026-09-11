@@ -67,6 +67,14 @@ export const productApi = {
     const res = await api.get('/products/low-stock');
     return res.data.data;
   },
+  uploadImage: async (id: string, file: File) => {
+    const form = new FormData();
+    form.append('image', file);
+    const res = await api.post(`/products/${id}/image`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
+  },
 };
 
 export const challanApi = {
@@ -101,6 +109,10 @@ export const challanApi = {
   getPublicStats: async () => {
     const res = await api.get('/challans/public/stats');
     return res.data.data;
+  },
+  downloadInvoice: async (id: string) => {
+    const res = await api.get(`/challans/${id}/invoice`, { responseType: 'blob' });
+    return res.data;
   },
 };
 

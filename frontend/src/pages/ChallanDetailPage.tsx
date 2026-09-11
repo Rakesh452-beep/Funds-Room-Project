@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { challanApi } from '../services';
 import { formatCurrency, formatDate, getChallanStatusColor, formatError } from '../utils/helpers';
 import type { Challan } from '../types';
-import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, FileDown } from 'lucide-react';
 
 export const ChallanDetailPage = () => {
   const { id } = useParams();
@@ -31,6 +31,21 @@ export const ChallanDetailPage = () => {
     catch (e: any) { alert(formatError(e, 'Failed to cancel')); }
   };
 
+  const handleDownloadPdf = async () => {
+    if (!id) return;
+    try {
+      const blob = await challanApi.downloadInvoice(id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${challan?.challanNumber ?? 'challan'}-invoice.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e: any) { alert(formatError(e, 'Failed to download invoice')); }
+  };
+
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
   if (!challan) return null;
 
@@ -39,6 +54,7 @@ export const ChallanDetailPage = () => {
       <div className="flex items-center justify-between">
         <button onClick={() => navigate('/challans')} className="btn-ghost text-sm"><ArrowLeft className="w-4 h-4" /> Back</button>
         <div className="flex items-center gap-2">
+          <button onClick={handleDownloadPdf} className="btn-outline text-sm"><FileDown className="w-4 h-4" /> Invoice PDF</button>
           {challan.status === 'DRAFT' && (<><button onClick={handleConfirm} className="btn-primary text-sm"><CheckCircle className="w-4 h-4" /> Confirm</button><button onClick={handleCancel} className="btn-outline text-sm border-red-200 text-red-600 hover:bg-red-50"><XCircle className="w-4 h-4" /> Cancel</button></>)}
         </div>
       </div>

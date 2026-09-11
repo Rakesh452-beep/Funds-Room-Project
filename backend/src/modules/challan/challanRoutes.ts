@@ -8,6 +8,7 @@ import {
   cancelChallan,
   getDashboardStats,
   getPublicStats,
+  downloadChallanInvoice,
 } from './challanController';
 import { challanValidation, paginationValidation } from '../../utils/validations';
 import { validateResult } from '../../utils/validateResult';
@@ -24,6 +25,7 @@ router.get('/dashboard/stats', getDashboardStats);
 router.post('/', authorize('ADMIN', 'SALES'), challanValidation, validateResult, createChallan);
 router.get('/', paginationValidation, validateResult, getChallans);
 router.get('/:id', getChallanById);
+router.get('/:id/invoice', downloadChallanInvoice);
 router.put('/:id', authorize('ADMIN', 'SALES'), challanValidation, validateResult, updateChallan);
 router.post('/:id/confirm', authorize('ADMIN', 'SALES', 'WAREHOUSE'), confirmChallan);
 router.post('/:id/cancel', authorize('ADMIN', 'SALES'), cancelChallan);
